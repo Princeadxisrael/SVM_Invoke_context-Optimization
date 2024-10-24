@@ -9,6 +9,30 @@
 [![Build status](https://badge.buildkite.com/8cc350de251d61483db98bdfc895b9ea0ac8ffa4a32ee850ed.svg?branch=master)](https://buildkite.com/solana-labs/solana/builds?branch=master)
 [![codecov](https://codecov.io/gh/solana-labs/solana/branch/master/graph/badge.svg)](https://codecov.io/gh/solana-labs/solana)
 
+
+# Project
+
+A review, annotation and optimization of the Solana core infrastructure including the TPU, Validator processes, Runtime, Consesus mechanisms and the Runtime Invoke_Context with particular focus on how the Runtime uses Rust to  consume Programs, Accounts, Instructions, and Data. 
+
+
+## Optimizations
+
+1. The prepare_instruction method in the invoke_context module (line 386-394) was optimized by using a cloned() method:
+
+
+```bash
+let instruction_accounts = duplicate_indicies
+.into_iter().map(|duplicate_index| {deduplicated_instruction_accounts
+.get(duplicate_index)
+.cloned()  // Use .cloned() here
+.ok_or(InstructionError::NotEnoughAccountKeys)
+})
+.collect::<Result<Vec<InstructionAccount>, InstructionError>>()?;
+```
+While the functionality will remain the same, the efficiency of the program is improved by use of .cloned() which simplifies the logic because it applies the cloning operation on the Option<T> directly thus avoiding the need for an additional ok_or() call, reducing complexity and the number of intermediate operations. It's slightly more concise and can be marginally faster because it avoids an additional OK() wrapping step.
+
+
+
 # Building
 
 ## **1. Install rustc, cargo and rustfmt.**
