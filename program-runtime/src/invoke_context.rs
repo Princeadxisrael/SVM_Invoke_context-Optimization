@@ -145,6 +145,7 @@ pub struct SyscallContext {
 }
 
 #[derive(Debug, Clone)]
+//This struct holds serialized info about the accounts used within the BPF program
 pub struct SerializedAccountMetadata {
     pub original_data_len: usize,
     pub vm_data_addr: u64,
@@ -383,15 +384,22 @@ impl<'a> InvokeContext<'a> {
                 return Err(InstructionError::PrivilegeEscalation);
             }
         }
-        let instruction_accounts = duplicate_indicies
-            .into_iter()
-            .map(|duplicate_index| {
-                Ok(deduplicated_instruction_accounts
-                    .get(duplicate_index)
-                    .ok_or(InstructionError::NotEnoughAccountKeys)?
-                    .clone())
-            })
-            .collect::<Result<Vec<InstructionAccount>, InstructionError>>()?;
+        // let instruction_accounts = duplicate_indicies
+        //     .into_iter()
+        //     .map(|duplicate_index| {
+        //         Ok(deduplicated_instruction_accounts
+        //             .get(duplicate_index)
+        //             .ok_or(InstructionError::NotEnoughAccountKeys)?
+        //             .clone())
+        //     })
+        //     .collect::<Result<Vec<InstructionAccount>, InstructionError>>()?;
+
+        let instruction_accounts = duplicate_indicies.into_iter()
+        .map(|duplicate_index| {deduplicated_instruction_accounts.get(duplicate_index)
+            .cloned()  // Use .cloned() here
+            .ok_or(InstructionError::NotEnoughAccountKeys)
+            }).collect::<Result<Vec<InstructionAccount>, InstructionError>>()?;
+            
 
         // Find and validate executables / program accounts
         let callee_program_id = instruction.program_id;
