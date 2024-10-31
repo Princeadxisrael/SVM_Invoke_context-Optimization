@@ -17,6 +17,8 @@ A review, annotation and optimization of the Solana core infrastructure includin
 
 ## Optimizations
 
+Check out the optimization chart: [SVM optimization chart](https://docs.google.com/document/d/1f4VHvumYd2pNMWijQUqWre7i86ximymFHrxTggl9iGQ/edit?usp=sharing)
+
 1. The prepare_instruction method in the invoke_context module (line 386-394) was optimized by using a cloned() method:
 
 
