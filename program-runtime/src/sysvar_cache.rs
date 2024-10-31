@@ -1,6 +1,6 @@
 #[allow(deprecated)]
 use solana_sdk::sysvar::{
-    fees::Fees, last_restart_slot::LastRestartSlot, recent_blockhashes::RecentBlockhashes,
+    fees::Fees, recent_blockhashes::RecentBlockhashes,
 };
 use {
     crate::invoke_context::InvokeContext,
@@ -8,7 +8,7 @@ use {
         instruction::InstructionError,
         pubkey::Pubkey,
         sysvar::{
-            clock::Clock, epoch_rewards::EpochRewards, epoch_schedule::EpochSchedule, rent::Rent,
+            clock::Clock, last_restart_slot::LastRestartSlot, epoch_rewards::EpochRewards, epoch_schedule::EpochSchedule, rent::Rent,
             slot_hashes::SlotHashes, stake_history::StakeHistory, Sysvar, SysvarId,
         },
         transaction_context::{IndexOfAccount, InstructionContext, TransactionContext},
@@ -29,14 +29,14 @@ pub struct SysvarCache {
     clock: Option<Arc<Clock>>,
     epoch_schedule: Option<Arc<EpochSchedule>>,
     epoch_rewards: Option<Arc<EpochRewards>>,
-    #[allow(deprecated)]
-    fees: Option<Arc<Fees>>,
     rent: Option<Arc<Rent>>,
     slot_hashes: Option<Arc<SlotHashes>>,
-    #[allow(deprecated)]
-    recent_blockhashes: Option<Arc<RecentBlockhashes>>,
     stake_history: Option<Arc<StakeHistory>>,
     last_restart_slot: Option<Arc<LastRestartSlot>>,
+    #[allow(deprecated)]
+    fees: Option<Arc<Fees>>,
+    #[allow(deprecated)]
+    recent_blockhashes: Option<Arc<RecentBlockhashes>>,
 }
 
 impl SysvarCache {
